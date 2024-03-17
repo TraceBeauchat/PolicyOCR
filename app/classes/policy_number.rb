@@ -6,7 +6,7 @@ class PolicyNumber
 
   attr_reader :number
 
-  def initialize(number, ocr:)
+  def initialize(number, ocr:nil)
     @number = number
     @ocr = ocr
 
