@@ -48,20 +48,19 @@ class PolicyNumber
 
   # Validates the ocr
   #  * Is an Array with 4 sub-arrays
-  #  * Each subarray contains 9 strings
-  #  * Each string is 3 characters [blank, _, |]
   def ocr_valid?
-    return false unless @ocr.length == 4
+    return false unless @ocr&.length == 4
 
-    @ocr.each do |line|
-      return false unless line&.length == 9
+    @ocr.all? { |line| ocr_line_valid?(line) }
+  end
 
-      line.each do |str|
-        return false unless str.length == 3 && !str.match(/[\s|_]{3}/).nil?
-      end
-    end
+  # A line in the OCR representation should be
+  #  * Each line contains 9 strings
+  #  * Each string is 3 characters [blank, _, or |]
+  def ocr_line_valid?(line)
+    return false unless line&.length == 9
 
-    true
+    line.all? { |str| str.length == 3 && !str.match(/[\s|_]{3}/).nil? }
   end
 
   # Calculates a checksum number for the policy number using:
