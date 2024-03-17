@@ -126,7 +126,7 @@ RSpec.describe PolicyNumber do
     context 'when policy number has an invalid checksum' do
       let(:policy_number) { PolicyNumber.new('023456789', ocr:) }
 
-      it 'returns truthy' do
+      it 'returns falsey' do
         expect(subject).to be_falsey
       end
     end
