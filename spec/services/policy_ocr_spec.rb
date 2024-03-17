@@ -62,13 +62,13 @@ RSpec.describe PolicyOcr do
         let(:filename) { File.join(file_fixture_path, 'sample.txt') }
 
         it 'properly parses the file' do
-          subject
+          lines = subject
 
           # sample.txt contains 44 lines
-          expect(service.instance_variable_get(:@lines).length).to eql 44
+          expect(lines.length).to eql 44
 
           # policy numbers contain 9 digits, so each line array should contain 9 sub-elements (1 for each digit)
-          service.instance_variable_get(:@lines).each do |line|
+          lines.each do |line|
             expect(line.length).to eql 9
 
             line.each do |digit|
@@ -90,7 +90,7 @@ RSpec.describe PolicyOcr do
     let(:filename) {File.join(file_fixture_path, 'sample.txt') }
 
     before :each do
-      service.send(:load_file)
+      service.instance_variable_set(:@lines, service.send(:load_file))
     end
 
     context 'when called' do

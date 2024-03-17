@@ -23,8 +23,8 @@ class PolicyOcr < ApplicationService
   end
 
   def call
-    load_file
-    return if @lines.empty?
+    @lines = load_file
+    return [] if @lines.empty?
 
     policy_numbers = []
     until @lines.empty?
@@ -45,20 +45,14 @@ class PolicyOcr < ApplicationService
   #
   # NOTE: For large files we would want to stream the file, read 4 lines, process the 4 lines, and continue.
   def load_file
-    @lines = []
-    File.readlines(@filename, chomp: true).each_with_index do |line, index|
+    File.readlines(@filename, chomp: true).each_with_index.map do |line, index|
       # Validate the format of the line
       raise StandardError, "Line #{index + 1}: Invalid file format (line length)" if line.length != 27
       raise StandardError, "Line #{index + 1}: Invalid file format (invalid character)" if line.match(/[\s|_]{27}/).nil?
 
       # Split the line into its digit pieces (sequence of 3 |, _, or space)
-      @lines << split_line(line)
+      line.scan(/.{3}/)
     end
-  end
-
-  # Splits each line into an array where each element in the array contains three characters.
-  def split_line(line)
-    line.scan(/.{3}/)
   end
 
   # Removes and returns the array elements representing the next policy number to parse
