@@ -116,19 +116,8 @@ RSpec.describe PolicyNumber do
   describe '.valid?' do
     subject { policy_number.valid? }
 
-    let(:ocr) do
-      Ocr.new(
-        [
-          ['   ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ '],
-          ['|_|', '|_ ', '  |', '|_ ', '| |', '|_|', '| |', '| |', '| |'],
-          ['  |', ' _|', '  |', ' _|', '|_|', '|_|', '|_|', '|_|', '|_|'],
-          ['   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ']
-        ]
-      )
-    end
-
     context 'when policy number has a valid checksum' do
-      let(:policy_number) { PolicyNumber.new('123456789', ocr:) }
+      let(:policy_number) { PolicyNumber.new('123456789') }
 
       it 'returns truthy' do
         expect(subject).to be_truthy
@@ -136,7 +125,15 @@ RSpec.describe PolicyNumber do
     end
 
     context 'when policy number has an invalid checksum' do
-      let(:policy_number) { PolicyNumber.new('023456789', ocr:) }
+      let(:policy_number) { PolicyNumber.new('023456789') }
+
+      it 'returns falsey' do
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'when policy number has ?s' do
+      let(:policy_number) { PolicyNumber.new('02345?789') }
 
       it 'returns falsey' do
         expect(subject).to be_falsey
