@@ -4,14 +4,14 @@
 class PolicyNumber
   BLANK_LINE = "#{' ' * 27}\n".freeze
 
-  attr_reader :number
+  attr_reader :number, :ocr
 
   def initialize(number, ocr:nil)
     @number = number
     @ocr = ocr
 
     raise StandardError, "Invalid policy number format: #{@number}" unless format_valid?
-    raise StandardError, 'Invalid OCR' unless @ocr.nil? || ocr_valid?
+    raise StandardError, 'Invalid OCR' unless @ocr.nil? || @ocr.valid?
   end
 
   # A valid policy number is indicated by its checksum equaling 0
@@ -31,12 +31,6 @@ class PolicyNumber
     end
   end
 
-  def ocr
-    @ocr.map do |line|
-      line.join('')
-    end.join("\n") + BLANK_LINE
-  end
-
   private
 
   # Verifies that the string is a properly formatted policy number
@@ -44,23 +38,6 @@ class PolicyNumber
   #  * Only contains digits or ?'s'
   def format_valid?
     !@number.match(/[\d?]{9}/).nil? && @number.length == 9
-  end
-
-  # Validates the ocr
-  #  * Is an Array with 4 sub-arrays
-  def ocr_valid?
-    return false unless @ocr&.length == 4
-
-    @ocr.all? { |line| ocr_line_valid?(line) }
-  end
-
-  # A line in the OCR representation should be
-  #  * Each line contains 9 strings
-  #  * Each string is 3 characters [blank, _, or |]
-  def ocr_line_valid?(line)
-    return false unless line&.length == 9
-
-    line.all? { |str| str.length == 3 && !str.match(/[\s|_]{3}/).nil? }
   end
 
   # Calculates a checksum number for the policy number using:

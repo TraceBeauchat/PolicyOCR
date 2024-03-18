@@ -112,58 +112,14 @@ RSpec.describe PolicyOcr do
     end
   end
 
-  describe '.parse_digits' do
-    subject { service.send(:parse_digits, policy_ocr) }
-
-    let(:filename) {File.join(file_fixture_path, 'sample.txt') }
-
-    context 'when called with unambiguous ocr' do
-      let(:policy_ocr) do
-        [
-          ['   ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ '], 
-          ['|_|', '|_ ', '  |', '|_ ', '| |', '|_|', '| |', '| |', '| |'], 
-          ['  |', ' _|', '  |', ' _|', '|_|', '|_|', '|_|', '|_|', '|_|'], 
-          ['   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ']
-        ]
-      end
-
-      it 'returns an array of 9 digits' do
-        expect(subject.length).to be 9
-      end
-
-      it 'returns the expected digits' do
-        expect(subject).to eql([4, 5, 7, 5, 0, 8, 0, 0, 0])
-      end
-    end
-
-    context 'when called with ocr having unrecognizable representation' do
-      let(:policy_ocr) do
-        [
-          ['   ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ ', ' _ '],
-          [' _|', '|_ ', '  |', '|  ', '| |', '|_|', '| |', '| |', '| |'],
-          ['  |', ' _|', '  |', ' _|', '|_|', '|_|', '|_|', '|_|', '|_|'],
-          ['   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ', '   ']
-        ]
-      end
-
-      it 'returns an array of 9 digits' do
-        expect(subject.length).to be 9
-      end
-
-      it 'replaces unrecognized representations with ?' do
-        expect(subject).to eql(['?', 5, 7, '?', 0, 8, 0, 0, 0])
-      end
-    end
-  end
-
   describe '.policy_number' do
-    subject { service.send(:policy_number, digits, policy_ocr) }
+    subject { service.send(:policy_number, policy_ocr) }
 
     let(:filename) {File.join(file_fixture_path, 'sample.txt') }
 
     context 'when an invalid number is provided' do
       let(:digits) { ['a', 1, 2, 3, 4, 5, 6, 7, 8] }
-      let(:policy_ocr) { [] }
+      let(:policy_ocr) { nil }
 
       it 'throws an exception' do
         expect { subject }.to raise_error(StandardError)

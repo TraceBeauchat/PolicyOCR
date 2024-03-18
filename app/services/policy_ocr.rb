@@ -11,8 +11,6 @@
 # a policy number written using pipes and underscores, and the fourth line is blank. Each policy number
 # should have 9 digits, all of which should be in the range 0-9.
 class PolicyOcr < ApplicationService
-  include Digits
-
   def initialize(filename:)
     super
 
@@ -31,8 +29,7 @@ class PolicyOcr < ApplicationService
       policy_ocr = fetch_next_policy_number
       break if policy_ocr.empty? # Did we receive the ocr for a policy number?
 
-      digits = parse_digits(policy_ocr)
-      policy_numbers << policy_number(digits, policy_ocr)
+      policy_numbers << policy_number(policy_ocr)
     end
 
     policy_numbers
@@ -60,21 +57,9 @@ class PolicyOcr < ApplicationService
     @lines.shift(4)
   end
 
-  # Returns an array containing each digit in the policy number
-  def parse_digits(policy_ocr)
-    (0..8).map do |position|
-      digit_ocr = fetch_ocr_at_position(policy_ocr, position)
-      OCR_MAP[digit_ocr] || '?'
-    end
-  end
-
-  # Returns a string representing a complete digit
-  def fetch_ocr_at_position(ocr, position)
-    ocr[0][position] + ocr[1][position] + ocr[2][position]
-  end
-
   # Build the policy number specified by the given digits
-  def policy_number(digits, policy_ocr)
-    PolicyNumber.new(digits.join, ocr: policy_ocr)
+  def policy_number(policy_ocr)
+    ocr = Ocr.new(policy_ocr)
+    PolicyNumber.new(ocr.to_s, ocr: ocr)
   end
 end
