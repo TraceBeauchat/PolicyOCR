@@ -41,7 +41,7 @@ module Digits
          '|_|'\
          ' _|'
 
-  DIGITS = {
+  OCR_MAP = {
     ZERO => 0,
     ONE => 1,
     TWO => 2,

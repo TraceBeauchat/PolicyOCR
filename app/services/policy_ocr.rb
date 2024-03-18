@@ -64,7 +64,7 @@ class PolicyOcr < ApplicationService
   def parse_digits(policy_ocr)
     (0..8).map do |position|
       digit_ocr = fetch_ocr_at_position(policy_ocr, position)
-      DIGITS[digit_ocr] || '?'
+      OCR_MAP[digit_ocr] || '?'
     end
   end
 
