@@ -16,7 +16,7 @@ class PolicyNumber
 
   # A valid policy number is indicated by its checksum equaling 0
   def valid?
-    checksum.zero?
+    !@number.include?('?') && checksum.zero?
   end
 
   # Maps a policy number to its status string:
