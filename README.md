@@ -1,12 +1,12 @@
 # README
 
-This README documents the Kin PolicyOCR challenge.  For ease of use, the solution
+This README documents the PolicyOCR challenge.  For ease of use, the solution
 was developed as a Rails application, however does not define any controllers, 
 models, views, etc.  The repository as it stands supports the first three user 
 stories.
 
 ## User Story 1
-Kin has just recently purchased an ingenious machine to assist in reading policy 
+XYZ has just recently purchased an ingenious machine to assist in reading policy 
 report documents. The machine scans the paper documents for policy numbers, and 
 produces a file with a number of entries which each look like this:
 ```
